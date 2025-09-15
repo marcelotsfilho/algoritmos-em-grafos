@@ -56,8 +56,9 @@ public:
         return true; // Implementar lógica para verificar se o grafo é Euleriano
     }
 
-    bool isEulerianPath()
-    {
+    bool isEulerianPath(){
+        // função que verifica se o grafo possui um caminho euleriano
+        
         return true; // Implementar lógica para verificar se o grafo tem um caminho Euleriano
     }
 
@@ -75,40 +76,37 @@ public:
         return true; // Implementar lógica para verificar se o grafo é conexo
     }
 
-    bool isBipartite()
-    {
+    bool isBipartite(){
+        // deve-se utilizar a busca em largura para colorir os vertices do grafo com duas cores diferentes (0 e 1)
+
         return true; // Implementar lógica para verificar se o grafo é bipartido
     }
 
-    bool isPlanar()
-    {
+    bool isPlanar(){
         return true; // Implesize()mentar lógica para verificar se o grafo é planar
     }
 
     // TODO: Implementar para a proxima aula
     // um grafo é ciclico se possui pelo menos um ciclo (vertice inicial é igual ao vertice final)
     // utilizar busca em profundidade ja que tem a recursividade para tentar voltar ao vertice inicial
-    bool isCyclic()
-    {
+    bool isCyclic(){
+
         return true; // Implementar lógica para verificar se o grafo contém ciclos
     }
 
-    class depthFirstPaths
-    {
+    // função de busca em profundidade. utiliza recursão para explorar o grafo, marcando os vértices visitados
+    class depthFirstPaths{
     private:
         vector<bool> marked; // marcado[v] = existe um caminho de s para v?
         vector<int> edgeTo;  // edgeTo[v] = último vértice no caminho de s para v
         const Graph &G;      // referência ao grafo
         int source;          // vértice de origem
 
-        void dfs(int v)
-        {
+        void dfs(int v){
             marked[v] = true;
-            for (const Edge &e : G.getAdj(v)) // Itera sobre as arestas adjacentes
-            {
+            for (const Edge &e : G.getAdj(v)){ // Itera sobre as arestas adjacentes
                 int w = e.other(v);
-                if (!marked[w])
-                {
+                if (!marked[w]){
                     edgeTo[w] = v;
                     dfs(w);
                 }
