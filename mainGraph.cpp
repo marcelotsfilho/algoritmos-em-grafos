@@ -59,24 +59,51 @@ public:
     bool isEulerianPath(){
         // função que verifica se o grafo possui um caminho euleriano
         
+        
         return true; // Implementar lógica para verificar se o grafo tem um caminho Euleriano
     }
 
     // um grafo é conexo se existe um caminho entre qualquer par de vertices do grafo
     bool isConnected(Graph G){
         int qtdeVertices = G.getV();
-        for(int v = 0; v < qtdeVertices; v++){
-            // caso o grau do vertice v seja 0, o grafo nao e conexo
-            if(degree(v) == 0){
-                return false;
+        
+        if(qtdeVertices == 0){
+            return true;
+        }
+        if(qtdeVertices == 1){
+            return true;
+        }
+        vector<bool>visited(qtdeVertices, false);
+        queue<int>q;
+        // inicia a busca em largura (bfs) a partir do vertice 0
+        q.push(0);
+        visited[0] = true;
+        int countVisited = 1;
+        // o seguinte while realiza a busca em largura até que todos os vertices alcancaveis sejam visitados (empty representa a fila vazia)
+        while(!q.empty()){
+            // a variavel current(atual) recebe o vertice do inicio da fila
+            int current = q.front();
+            q.pop();
+            // o seguinte for vai iterar sobre todas as arestas adjacentes ao vertice current
+            for (const Edge &e : G.getAdj(current)) {
+            // a variavel neighbor(vizinho) recebe o vertice oposto ao current na aresta e
+            int neighbor = e.other(current);
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    countVisited++;
+                    q.push(neighbor);
+                }
             }
-            // percorrendo a lista de adjacencia do vertice v para descobrir se existe algum vertice isolado
-            
         }
         return true; // Implementar lógica para verificar se o grafo é conexo
     }
 
+    /*
+    um grafo é bipartido se seus vertices podem ser divididos em dois conjuntos disjuntos U e V, 
+    tais que todas as arestas conectam um vertice em U a um vertice em V
+    */ 
     bool isBipartite(){
+
         // deve-se utilizar a busca em largura para colorir os vertices do grafo com duas cores diferentes (0 e 1)
 
         return true; // Implementar lógica para verificar se o grafo é bipartido
@@ -114,8 +141,7 @@ public:
         }
 
     public:
-        depthFirstPaths(const Graph &G, int s) : G(G), source(s)
-        {
+        depthFirstPaths(const Graph &G, int s) : G(G), source(s){
             marked.resize(G.getV(), false);
             edgeTo.resize(G.getV(), -1);
             dfs(s);
@@ -141,8 +167,7 @@ public:
         }
     };
 
-    class breadthFirstPaths
-    {
+    class breadthFirstPaths{
     private:
         vector<bool> marked; // marcado[v] = existe um caminho de s para v?
         vector<int> edgeTo;  // edgeTo[v] = último vértice no caminho de s para v
@@ -150,23 +175,20 @@ public:
         const Graph &G;      // referência ao grafo
         int source;          // vértice de origem
 
-        void bfs(int s)
-        {
+        void bfs(int s){
             queue<int> q;
             marked[s] = true;
             distTo[s] = 0;
             q.push(s);
 
-            while (!q.empty())
-            {
+            // Enquanto a fila não estiver vazia, realiza o processamento dos vértices
+            while (!q.empty()){
                 int v = q.front();
                 q.pop();
 
-                for (const Edge &e : G.getAdj(v))
-                {
+                for (const Edge &e : G.getAdj(v)){
                     int w = e.other(v);
-                    if (!marked[w])
-                    {
+                    if (!marked[w]){
                         edgeTo[w] = v;
                         distTo[w] = distTo[v] + 1;
                         marked[w] = true;
@@ -177,26 +199,24 @@ public:
         }
 
     public:
-        breadthFirstPaths(const Graph &G, int s) : G(G), source(s)
-        {
-            marked.resize(G.getV(), false);
-            edgeTo.resize(G.getV(), -1);
-            distTo.resize(G.getV(), 99999);
+        // Construtor que inicializa a busca em largura a partir do vértice s
+        breadthFirstPaths(const Graph &G, int s) : G(G), source(s){
+            marked.resize(G.getV(), false); // Inicializa o vetor marcado com false, indicando que nenhum vétice foi visitado
+            edgeTo.resize(G.getV(), -1); // Inicializa o vetor edgeTo com -1, indicando que não há caminhos conhecidos inicialmente
+            distTo.resize(G.getV(), 99999); // Inicializa o vetor distTo com um valor alto, indicando que as distâncias são inicialmente desconhecidas
             bfs(s);
         }
 
-        bool hasPathTo(int v) const
-        {
+        // Verifica se há um caminho do vértice de origem(source) até o vértice v, caso exista marca 
+        bool hasPathTo(int v) const{
             return marked[v];
         }
 
-        int distanceTo(int v) const
-        {
+        int distanceTo(int v) const{
             return distTo[v];
         }
 
-        stack<int> pathTo(int v) const
-        {
+        stack<int> pathTo(int v) const{
             stack<int> path;
             if (!hasPathTo(v))
                 return path; // Retorna pilha vazia
