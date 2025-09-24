@@ -53,14 +53,27 @@ public:
                 return false;
             }
         }
-        return true; // Implementar lógica para verificar se o grafo é Euleriano
+        return true;
     }
 
+    /*
+    Um grafo possui caminho euleriano se e somente se:
+    -> O grafo for conexo (exceto pelos vértices isolados)
+    -> Exatamente zero ou dois vértices tiverem grau ímpar
+    */
     bool isEulerianPath(){
-        // função que verifica se o grafo possui um caminho euleriano
-        
-        
-        return true; // Implementar lógica para verificar se o grafo tem um caminho Euleriano
+        int qtdeVertices = G.getV();
+        // a variavel oddDegreeCount conta a quantidade de vertices com grau impar
+        int oddDegreeCount = 0;
+        for(int v = 0; v < qtdeVertices; v++){
+            if(degree(v)%2 != 0){
+                oddDegreeCount++;
+            }
+        }
+        if(oddDegreeCount != 0 && oddDegreeCount != 2){
+            return false;
+        }
+        return true;
     }
 
     // um grafo é conexo se existe um caminho entre qualquer par de vertices do grafo
@@ -101,11 +114,37 @@ public:
     /*
     um grafo é bipartido se seus vertices podem ser divididos em dois conjuntos disjuntos U e V, 
     tais que todas as arestas conectam um vertice em U a um vertice em V
+    -> um grafo é bipartido se e somente se ele não possui ciclos de comprimento ímpar
     */ 
     bool isBipartite(){
+        int qtdeVertices = G.getV();
+        if(qtdeVertices == 0){
+            return true;
+        }
+        // vetor de inteiros para armazenar as cores dos vértices (-1 indica que ainda nao foi colorido)
+        vector<int> color(qtdeVertices, -1);
+        for(int v = 0; v < qtdeVertices; v++){
+            queue<int> q;
+            if(color[v] == -1){
+                q.push(v);
+                color[v] = 0; // atribui cor ao vertice atual
+            }
+            // equanto a fila não estiver vazia
+            while(!q.empty()){
+                int current = q.front();
+                q.pop();
 
-        // deve-se utilizar a busca em largura para colorir os vertices do grafo com duas cores diferentes (0 e 1)
-
+                for(const Edge &e : G.getAdj(current)){
+                    int neighbor = e.other(current);
+                    if(color[neighbor] == -1){
+                        color[neighbor] = 1 - color[current];
+                        q.push(neighbor);
+                    }else if(color[neighbor] == color[current]){
+                        return false; // se o vizinho ja tiver a mesma cor do vertice atual, o grafo nao é bipartido
+                    }
+                }
+            }
+        }
         return true; // Implementar lógica para verificar se o grafo é bipartido
     }
 
@@ -117,6 +156,10 @@ public:
     // um grafo é ciclico se possui pelo menos um ciclo (vertice inicial é igual ao vertice final)
     // utilizar busca em profundidade ja que tem a recursividade para tentar voltar ao vertice inicial
     bool isCyclic(){
+        int qtdeVertices = G.getV();
+        vector<bool> visited(qtdeVertices, false);
+        vector<int> parent(qtdeVertices, -1);
+
 
         return true; // Implementar lógica para verificar se o grafo contém ciclos
     }
